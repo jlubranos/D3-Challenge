@@ -1,4 +1,4 @@
-// D3 - Challenge Healthcare .vs. Poverty Scatterplot
+// D3 - Challenge Healthcare 
 // Boiler Plate svg setup...
 var svgWidth = 960;
 var svgHeight = 600;
