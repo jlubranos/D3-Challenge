@@ -36,7 +36,7 @@ var xAxisDict = {
 };
 
 var yAxisDict = {
-    "obese":"Obesity %",
+    "obesity":"Obesity %",
     "smokes":"Smokers %",
     "healthcare":"Lacks Healthcare %"
 };
@@ -69,14 +69,18 @@ function xAxisLabels(xAxisDict, xlabelsGroup) {
             else {
                 status = "inactive"
             }
-        xlabelsGroup.append("text")
+        var xactiveLabel=xlabelsGroup.append("text")
             .attr("x",0)
             .attr("y",space)
             .attr("value",key)
             .classed(status,true)
             .text(xAxisDict[key]);
         space += 20;
+        if (status==="active") {
+            var thisX=xactiveLabel;
+        }
     }
+    return thisX;
 }
 
 function yAxisLabels(yAxisDict, ylabelsGroup) {
@@ -90,7 +94,7 @@ function yAxisLabels(yAxisDict, ylabelsGroup) {
         else {
             status = "inactive"
         }
-        ylabelsGroup.append("text")
+        var yactiveLabel=ylabelsGroup.append("text")
             .attr("y", 0 - margin.left+space)
             .attr("x", 0 - (height / 2))
             .attr("dy","1em")
@@ -98,11 +102,14 @@ function yAxisLabels(yAxisDict, ylabelsGroup) {
             .classed(status,true)
             .text(yAxisDict[key]);
         space += 20;
+        if (status==="active") {
+            var thisY=yactiveLabel;
+        }
     }
+    return thisY;
 }
 
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
-    console.log("xaxis value :",chosenXAxis);
     var toolTip = d3.tip()
         .attr("class","d3-tip")
         .offset([100,0])
@@ -120,6 +127,35 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .on("mouseout", function(d,i) {
             toolTip.hide(d, this);
         });
+    return circlesGroup;
+}
+
+function renderXAxis(xScale, xAxis) {
+    var bottomAxis = d3.axisBottom(xScale);
+
+    xAxis.transition()
+        .duration(1000)
+        .call(bottomAxis);
+    
+    return xAxis;   
+ }
+
+ function renderYAxis(yScale, yAxis) {
+    var leftAxis = d3.axisLeft(yScale);
+
+    yAxis.transition()
+        .duration(1000)
+        .call(leftAxis);
+    
+    return yAxis;   
+ }
+
+function renderCircles(circlesGroup, xScale, yScale, chosenXAxis, chosenYAxis) {
+
+    circlesGroup.transition()
+        .duration(1000)
+        .attr("cx", d => xScale(d[chosenXAxis]))
+        .attr("cy", d => yScale(d[chosenYAxis]))
     return circlesGroup;
 }
 
@@ -181,8 +217,47 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     var ylabelsGroup = chartGroup.append("g")
         .attr("transform", "rotate(-90)");
 
-    xAxisLabels(xAxisDict, xlabelsGroup); 
-    yAxisLabels(yAxisDict, ylabelsGroup);
-    updateToolTip(chosenXAxis,chosenYAxis,circlesGroup);
-    });
+    var xactiveLabel = xAxisLabels(xAxisDict, xlabelsGroup); 
+    var yactiveLabel = yAxisLabels(yAxisDict, ylabelsGroup);
+
+    var circlesGroup = updateToolTip(chosenXAxis,chosenYAxis,circlesGroup);
+
+    xlabelsGroup.selectAll("text")
+        .on("click", function() {
+            var value = d3.select(this).attr("value");
+            if (value !== chosenXAxis) {
+                xactiveLabel
+                    .classed("inactive",true)
+                    .classed("active",false);
+                xactiveLabel=d3.select(this);
+                xactiveLabel
+                    .classed("inactive",false)
+                    .classed("active",true);
+                chosenXAxis=value;
+                xLinearScale = xScale(census, chosenXAxis);
+                xAxis=renderXAxis(xLinearScale, xAxis);
+                circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
+                circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+                }
+            });
+
+            ylabelsGroup.selectAll("text")
+            .on("click", function() {
+                var value = d3.select(this).attr("value");
+                if (value !== chosenYAxis) {
+                    yactiveLabel
+                        .classed("inactive",true)
+                        .classed("active",false);
+                    yactiveLabel=d3.select(this);
+                    yactiveLabel
+                        .classed("inactive",false)
+                        .classed("active",true);
+                    chosenYAxis=value;
+                    yLinearScale = yScale(census, chosenYAxis);
+                    yAxis=renderYAxis(yLinearScale, yAxis);
+                    circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
+                    circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+                    }
+                });            
+});
   
