@@ -163,6 +163,7 @@ function cleardatapointLabels(dotlabels) {
     
         dotlabels
             .remove();
+
 }
 
 function datapointLabels(data, xLinearScale, yLinearScale) {
@@ -170,15 +171,18 @@ function datapointLabels(data, xLinearScale, yLinearScale) {
     var dotlabels = chartGroup.selectAll("textCircle")
         .data(data)
         .enter()
-        .append("text")
-        .attr("x", d => xLinearScale(d[chosenXAxis]))
-        .attr("y", d => yLinearScale(d[chosenYAxis])+3)
-        .text(d => d.abbr)
-        .attr("text-anchor","middle")
-        .attr("font-weight","bold")
-        .attr("font_family", "sans-serif")
-        .attr("font-size", "10px")
-        .attr("fill","white");
+        .append("text");
+        
+        dotlabels.transition()
+            .duration(1000)
+            .attr("x", d => xLinearScale(d[chosenXAxis]))
+            .attr("y", d => yLinearScale(d[chosenYAxis])+3)
+            .text(d => d.abbr)
+            .attr("text-anchor","middle")
+            .attr("font-weight","bold")
+            .attr("font_family", "sans-serif")
+            .attr("font-size", "10px")
+            .attr("fill","white");
 
     return dotlabels;
 }
