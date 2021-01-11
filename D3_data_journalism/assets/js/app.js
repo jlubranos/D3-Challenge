@@ -30,15 +30,15 @@ var chosenXAxis = "poverty";
 var chosenYAxis = "healthcare";
 
 var xAxisDict = {
-    "poverty":"Poverty %",
+    "poverty":"Poverty (%)",
     "age":"Age (median)",
     "income":"Household Income (median)"
 };
 
 var yAxisDict = {
-    "obesity":"Obesity %",
-    "smokes":"Smokers %",
-    "healthcare":"Lacks Healthcare %"
+    "obesity":"Obesity (%)",
+    "smokes":"Smokers (%)",
+    "healthcare":"Lacks Healthcare (%)"
 };
 
 function xScale(census,chosenXAxis) {
@@ -187,6 +187,16 @@ function datapointLabels(data, xLinearScale, yLinearScale) {
     return dotlabels;
 }
 
+function chartTitle(chosenYAxis, ydict, chosenXAxis, xdict) {
+
+    d3.select("h1")
+        .remove();
+
+    d3.select(".col-xs-12")
+        .append("h1")
+        .text(d => `${ydict[chosenYAxis]} vs ${xdict[chosenXAxis]}`);
+}
+
     d3.csv("assets/data/data.csv").then(function(census, err) {
         if (err) throw err;
   
@@ -250,6 +260,8 @@ function datapointLabels(data, xLinearScale, yLinearScale) {
     var yactiveLabel = yAxisLabels(yAxisDict, ylabelsGroup);
 
     var circlesGroup = updateToolTip(chosenXAxis,chosenYAxis,circlesGroup);
+ 
+    chartTitle(chosenYAxis, yAxisDict, chosenXAxis, xAxisDict);
 
     xlabelsGroup.selectAll("text")
         .on("click", function() {
@@ -264,6 +276,7 @@ function datapointLabels(data, xLinearScale, yLinearScale) {
                     .classed("inactive",false)
                     .classed("active",true);
                 chosenXAxis=value;
+                chartTitle(chosenYAxis, yAxisDict, chosenXAxis, xAxisDict);
                 xLinearScale = xScale(census, chosenXAxis);
                 xAxis=renderXAxis(xLinearScale, xAxis);
                 circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
@@ -286,6 +299,7 @@ function datapointLabels(data, xLinearScale, yLinearScale) {
                     .classed("inactive",false)
                     .classed("active",true);
                 chosenYAxis=value;
+                chartTitle(chosenYAxis, yAxisDict, chosenXAxis, xAxisDict);
                 yLinearScale = yScale(census, chosenYAxis);
                 yAxis=renderYAxis(yLinearScale, yAxis);
                 circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
