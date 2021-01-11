@@ -159,6 +159,28 @@ function renderCircles(circlesGroup, xScale, yScale, chosenXAxis, chosenYAxis) {
     return circlesGroup;
 }
 
+function cleardatapointLabels(data, xLinearScale, yLinearScale) {
+    
+    chartGroup.selectAll("textCircle")
+        .remove()
+}
+
+function datapointLabels(data, xLinearScale, yLinearScale) {
+
+    chartGroup.selectAll("textCircle")
+        .data(data)
+        .enter()
+        .append("text")
+        .attr("x", d => xLinearScale(d[chosenXAxis]))
+        .attr("y", d => yLinearScale(d[chosenYAxis])+3)
+        .text(d => d.abbr)
+        .attr("text-anchor","middle")
+        .attr("font-weight","bold")
+        .attr("font_family", "sans-serif")
+        .attr("font-size", "10px")
+        .attr("fill","white");
+}
+
     d3.csv("assets/data/data.csv").then(function(census, err) {
         if (err) throw err;
   
@@ -211,6 +233,8 @@ function renderCircles(circlesGroup, xScale, yScale, chosenXAxis, chosenYAxis) {
         .attr("fill", "blue")
         .attr("opacity", ".5");
 
+    datapointLabels(census, xLinearScale, yLinearScale);
+
     var xlabelsGroup = chartGroup.append("g")
         .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
@@ -226,6 +250,7 @@ function renderCircles(circlesGroup, xScale, yScale, chosenXAxis, chosenYAxis) {
         .on("click", function() {
             var value = d3.select(this).attr("value");
             if (value !== chosenXAxis) {
+                cleardatapointLabels(census, xLinearScale, yLinearScale);
                 xactiveLabel
                     .classed("inactive",true)
                     .classed("active",false);
@@ -238,6 +263,8 @@ function renderCircles(circlesGroup, xScale, yScale, chosenXAxis, chosenYAxis) {
                 xAxis=renderXAxis(xLinearScale, xAxis);
                 circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
                 circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+                datapointLabels(census, xLinearScale, yLinearScale);
+
                 }
             });
 
@@ -245,6 +272,7 @@ function renderCircles(circlesGroup, xScale, yScale, chosenXAxis, chosenYAxis) {
             .on("click", function() {
                 var value = d3.select(this).attr("value");
                 if (value !== chosenYAxis) {
+                    cleardatapointLabels(census, xLinearScale, yLinearScale);
                     yactiveLabel
                         .classed("inactive",true)
                         .classed("active",false);
@@ -257,6 +285,7 @@ function renderCircles(circlesGroup, xScale, yScale, chosenXAxis, chosenYAxis) {
                     yAxis=renderYAxis(yLinearScale, yAxis);
                     circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
                     circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+                    datapointLabels(census, xLinearScale, yLinearScale);
                     }
                 });            
 });
