@@ -159,15 +159,15 @@ function renderCircles(circlesGroup, xScale, yScale, chosenXAxis, chosenYAxis) {
     return circlesGroup;
 }
 
-function cleardatapointLabels(data, xLinearScale, yLinearScale) {
+function cleardatapointLabels(dotlabels) {
     
-    chartGroup.selectAll("textCircle")
-        .remove()
+        dotlabels
+            .remove();
 }
 
 function datapointLabels(data, xLinearScale, yLinearScale) {
 
-    chartGroup.selectAll("textCircle")
+    var dotlabels = chartGroup.selectAll("textCircle")
         .data(data)
         .enter()
         .append("text")
@@ -179,6 +179,8 @@ function datapointLabels(data, xLinearScale, yLinearScale) {
         .attr("font_family", "sans-serif")
         .attr("font-size", "10px")
         .attr("fill","white");
+
+    return dotlabels;
 }
 
     d3.csv("assets/data/data.csv").then(function(census, err) {
@@ -206,7 +208,6 @@ function datapointLabels(data, xLinearScale, yLinearScale) {
             state.healthcareLow = +state.healthcareLow;
             state.healthcareHigh = +state.healthcareHigh;
         });
-    console.log("Data :",census);
 
     var xLinearScale = xScale(census,chosenXAxis);
     var yLinearScale = yScale(census,chosenYAxis);
@@ -233,7 +234,7 @@ function datapointLabels(data, xLinearScale, yLinearScale) {
         .attr("fill", "blue")
         .attr("opacity", ".5");
 
-    datapointLabels(census, xLinearScale, yLinearScale);
+    var dotlabels = datapointLabels(census, xLinearScale, yLinearScale);
 
     var xlabelsGroup = chartGroup.append("g")
         .attr("transform", `translate(${width / 2}, ${height + 20})`);
@@ -250,7 +251,7 @@ function datapointLabels(data, xLinearScale, yLinearScale) {
         .on("click", function() {
             var value = d3.select(this).attr("value");
             if (value !== chosenXAxis) {
-                cleardatapointLabels(census, xLinearScale, yLinearScale);
+                cleardatapointLabels(dotlabels);
                 xactiveLabel
                     .classed("inactive",true)
                     .classed("active",false);
@@ -263,7 +264,7 @@ function datapointLabels(data, xLinearScale, yLinearScale) {
                 xAxis=renderXAxis(xLinearScale, xAxis);
                 circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
                 circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
-                datapointLabels(census, xLinearScale, yLinearScale);
+                dotlabels = datapointLabels(census, xLinearScale, yLinearScale);
 
                 }
             });
@@ -272,7 +273,7 @@ function datapointLabels(data, xLinearScale, yLinearScale) {
             .on("click", function() {
                 var value = d3.select(this).attr("value");
                 if (value !== chosenYAxis) {
-                    cleardatapointLabels(census, xLinearScale, yLinearScale);
+                    cleardatapointLabels(dotlabels);
                     yactiveLabel
                         .classed("inactive",true)
                         .classed("active",false);
@@ -285,7 +286,7 @@ function datapointLabels(data, xLinearScale, yLinearScale) {
                     yAxis=renderYAxis(yLinearScale, yAxis);
                     circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
                     circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
-                    datapointLabels(census, xLinearScale, yLinearScale);
+                    dotlabels = datapointLabels(census, xLinearScale, yLinearScale);
                     }
                 });            
 });
