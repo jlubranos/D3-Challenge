@@ -267,27 +267,27 @@ function datapointLabels(data, xLinearScale, yLinearScale) {
                 dotlabels = datapointLabels(census, xLinearScale, yLinearScale);
 
                 }
-            });
+        });
 
-            ylabelsGroup.selectAll("text")
-            .on("click", function() {
-                var value = d3.select(this).attr("value");
-                if (value !== chosenYAxis) {
-                    cleardatapointLabels(dotlabels);
-                    yactiveLabel
-                        .classed("inactive",true)
-                        .classed("active",false);
-                    yactiveLabel=d3.select(this);
-                    yactiveLabel
-                        .classed("inactive",false)
-                        .classed("active",true);
-                    chosenYAxis=value;
-                    yLinearScale = yScale(census, chosenYAxis);
-                    yAxis=renderYAxis(yLinearScale, yAxis);
-                    circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
-                    circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
-                    dotlabels = datapointLabels(census, xLinearScale, yLinearScale);
-                    }
-                });            
+     ylabelsGroup.selectAll("text")
+        .on("click", function() {
+            var value = d3.select(this).attr("value");
+            if (value !== chosenYAxis) {
+                cleardatapointLabels(dotlabels);
+                yactiveLabel
+                    .classed("inactive",true)
+                    .classed("active",false);
+                yactiveLabel=d3.select(this);
+                yactiveLabel
+                    .classed("inactive",false)
+                    .classed("active",true);
+                chosenYAxis=value;
+                yLinearScale = yScale(census, chosenYAxis);
+                yAxis=renderYAxis(yLinearScale, yAxis);
+                circlesGroup = renderCircles(circlesGroup, xLinearScale, yLinearScale, chosenXAxis, chosenYAxis);
+                circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+                dotlabels = datapointLabels(census, xLinearScale, yLinearScale);
+                }
+        });            
 });
   
