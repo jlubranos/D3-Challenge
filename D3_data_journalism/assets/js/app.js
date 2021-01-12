@@ -111,12 +111,19 @@ function yAxisLabels(yAxisDict, ylabelsGroup) {
 }
 
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
+
     var toolTip = d3.tip()
         .attr("class","d3-tip")
         .offset([100,0])
         .html(function(d) {
-            return (`${d.state}<br>${chosenXAxis}: ${d[chosenXAxis]}%
+            if (chosenXAxis==="income" || chosenXAxis==="age") {
+                return (`${d.state}<br>${chosenXAxis}: ${d[chosenXAxis]}
+                    <br>${chosenYAxis}: ${d[chosenYAxis]}%`);                
+            }
+            else {
+                return (`${d.state}<br>${chosenXAxis}: ${d[chosenXAxis]}%
                     <br>${chosenYAxis}: ${d[chosenYAxis]}%`);
+            }
         });
 
     circlesGroup.call(toolTip);
