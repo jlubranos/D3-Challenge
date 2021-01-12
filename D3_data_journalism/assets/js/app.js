@@ -1,6 +1,6 @@
 // D3 - Challenge Healthcare 
 // Boiler Plate svg setup...
-var svgWidth = 960;
+var svgWidth =960;
 var svgHeight = 600;
 
 var margin = {
@@ -18,8 +18,9 @@ var height = svgHeight - margin.top - margin.bottom;
 var svg = d3
     .select("#scatter")
     .append("svg")
-    .attr("width", svgWidth)
-    .attr("height", svgHeight);
+//    .attr("width", svgWidth)
+//    .attr("height", svgHeight)
+    .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
 
 // Append an SVG group
 var chartGroup = svg.append("g")
