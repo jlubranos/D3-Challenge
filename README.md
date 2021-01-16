@@ -33,7 +33,7 @@ Two dictionaries are utilized which hold the key for each of the X and Y axis se
                 "healthcare":"Lacks Healthcare (%)"
             };
 
-As selections are made on either the X or Y axis functions are called to:
+As selections are made on either the X or Y axis, functions are called to:
 
 * Change the scatterplot title.
 * Set the scale for the X or Y axis according which is selected.
